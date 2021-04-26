@@ -2,7 +2,7 @@
 # load packages -----------------------------------------------------------
 
 library(tidyverse)
-
+library(ggplot2)
 
 # read data ---------------------------------------------------------------
 
@@ -21,9 +21,19 @@ fish_long <-
 
 # Question A t-test -------------------------------------------------------
 
+fish_ttest <- t.test(species ~ location, data = fish_long)
 
 # Question B difference in means -----------------------------------------
 
+fish_ttest$estimate
 
 # Question C histograms --------------------------------------------------
 
+distinct(fish_long, tributary, species, location)
+
+ggplot(data = fish_long, 
+       mapping = aes(x = tributary, 
+                     y = species, 
+                     fill = location)) + 
+  geom_bar(stat = "identity",
+           position = "dodge")

@@ -18,23 +18,46 @@ For each question below, write a sentence answering the question and show the co
 > Test the hypothesis that the tributaries have no effect on the number of species of electric fish.
 
 ```{r t-test}
+library(tidyverse)
+library(ggplot2)
 
+fish <- read_csv("chap12q19ElectricFish.csv")
+
+fish_long <- 
+  pivot_longer(fish, speciesUpstream:speciesDownstream,
+               names_to = "location",
+               values_to = "species") %>% 
+  mutate(location = str_remove(location, c("species"))) %>% 
+  print()
+
+fish_ttest <- t.test(species ~ location, data = fish_long)
+fish_ttest$estimate
 ```
 
-ANSWER
+ANSWER: Mean downstream: 16.41667
+Mean upstream: 14.58333
 
 ## Question B
 
 > What is the difference in the mean numbers of species between areas upstream and downstream of a tributary? What is the 95% confidence interval of this difference in means?
 
-ANSWER
+ANSWER: Very basically there are more species of fish downstream than there are upstream. 
+Difference in mean: 1.83334
+95% confidence intervals: -4.587031 and 8.253697
 
 ## Question C
 
 > State the assumptions that you had to make to complete parts (A) and (B). Create a graph to assess whether one of those assumptions was met.
 
-ANSWER
+ANSWER: Units are randomly sampled and the paired differences have a normal distribution in populations. Both assumptions appear to be not met. 
 
 ```{r}
+distinct(fish_long, tributary, species, location)
 
+ggplot(data = fish_long, 
+       mapping = aes(x = tributary, 
+           y = species, 
+           fill = location)) + 
+  geom_bar(stat = "identity",
+           position = "dodge")
 ```
